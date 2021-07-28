@@ -1,0 +1,89 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+group 'com.reemii.services'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.COMPILE_SDK_VERSION
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.MIN_SDK_VERSION
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue "string", "versionName", flutterVersionName
+        resValue "string", "versionCode", flutterVersionCode
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets.main {
+        jniLibs.srcDirs = ['libs']
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'com.lxj:xpopup:1.8.10'
+    api 'com.blankj:utilcodex:1.26.0'
+    api 'com.rxjava.rxhttp:rxhttp:1.4.0'
+    api 'com.rxjava.rxlife:rxlife:1.1.0'  //页面销毁，关闭请求，非必须
+
+    annotationProcessor 'com.rxjava.rxhttp:rxhttp-compiler:1.4.0'
+    api 'io.reactivex.rxjava2:rxandroid:2.1.1'  //切换主线程，Android工程必须
+    api 'org.greenrobot:eventbus:3.2.0'
+    api 'com.azhon:appupdateX:2.8.0'
+    implementation files('libs/com.baidu.tts_2.6.1.106.20191213_e6dcd95.jar')
+    api 'com.tencent:mmkv-static:1.1.2'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
+}

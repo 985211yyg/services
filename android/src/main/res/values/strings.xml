@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="battery_0">①允许应用持续耗电 -- 未设置</string>
+    <string name="sms_0">③允许读取短信，辅助接单 -- 未设置</string>
+    <string name="back_0">②允许应用在后台运行 -- 未设置</string>
+    <string name="notificatin_0">④允许熊猫代驾发出通知 -- 未设置</string>
+
+    <string name="battery_1">①允许应用持续耗电 -- 完成</string>
+    <string name="sms_1">③允许读取短信，辅助接单 -- 完成</string>
+    <string name="back_1">②允许应用在后台运行 -- 完成</string>
+    <string name="notificatin_1">④允许熊猫代驾发出通知 -- 完成</string>
+</resources>

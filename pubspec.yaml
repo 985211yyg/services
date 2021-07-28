@@ -1,0 +1,30 @@
+name: services
+description: A new Flutter plugin.
+version: 0.0.2
+author:
+publish_to: none
+
+environment:
+  sdk: ">=2.10.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_tts: ^3.2.1
+  # 音量控制
+  volume_control: ^0.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+
+  plugin:
+    platforms:
+      android:
+        package: com.reemii.services
+        pluginClass: ServicesPlugin
+      ios:
+        pluginClass: ServicesPlugin
+      macos:
+        pluginClass: ServicesPlugin

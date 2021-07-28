@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/react_round_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_20">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:gravity="center"
+        android:text="请按照如下提示设置"
+        android:textColor="@color/common_head_title_text_color"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/whitesmoke" />
+
+    <TextView
+        android:id="@+id/setting_battery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="start"
+        android:padding="@dimen/dp_10"
+        android:text="@string/battery_0"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/setting_sms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="start"
+        android:padding="@dimen/dp_10"
+        android:text="@string/sms_0"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/setting_back"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="start"
+        android:padding="@dimen/dp_10"
+        android:text="@string/back_0"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="normal" />
+
+
+    <TextView
+        android:id="@+id/setting_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="start"
+        android:padding="@dimen/dp_10"
+        android:text="@string/notificatin_0"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="normal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:background="@color/whitesmoke" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_10">
+
+        <TextView
+            android:focusable="true"
+            android:id="@+id/setting_setted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:text="我已经设置过"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/whitesmoke" />
+
+        <TextView
+            android:focusable="true"
+            android:id="@+id/setting_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:text="去设置"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

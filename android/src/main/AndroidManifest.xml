@@ -1,0 +1,24 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.reemii.services">
+
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<!--    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+
+    <application>
+        <receiver
+            android:name="com.reemii.services.protect.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <!-- 保活进程 -->
+        <service
+            android:name="com.reemii.services.protect.ProtectService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":protectService" />
+        <!-- 提示音播放进程 -->
+    </application>
+</manifest>
