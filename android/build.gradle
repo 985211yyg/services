@@ -46,9 +46,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-
+    compileSdkVersion 30
     defaultConfig {
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        minSdkVersion 21
 
         resValue "string", "versionName", flutterVersionName
         resValue "string", "versionCode", flutterVersionCode
