@@ -69,6 +69,7 @@ public class ServicesPlugin implements FlutterPlugin, MethodCallHandler, Activit
     public static final String DOMAIN = "domain";
     private MethodChannel mMethodChannel;
     private ActivityPluginBinding mActivityPluginBinding;
+    private FlutterPluginBinding mFlutterPluginBinding;
     private UpdateConfiguration configuration = new UpdateConfiguration()
             //输出错误日志
             .setEnableLog(true)
@@ -131,9 +132,7 @@ public class ServicesPlugin implements FlutterPlugin, MethodCallHandler, Activit
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
-            case "getPlatformVersion":
-                result.success("Android " + android.os.Build.VERSION.RELEASE);
-                break;
+            //初始化  语音、电量白名单、保活进程
             case INIT:
                 String token = (String) call.arguments;
                 SPUtils.getInstance().put("token", token);
@@ -224,60 +223,65 @@ public class ServicesPlugin implements FlutterPlugin, MethodCallHandler, Activit
 
     //保活进行
     private void init() {
-        if (this.mActivityPluginBinding == null) return;
+        if (this.mActivityPluginBinding != null) {
+            //请求电量白名单
+            whiteListSetting(mActivityPluginBinding.getActivity());
+            //获取百度离线语音的序列号
+            RxHttp.postJson(SPUtils.getInstance().getString("domain")
+                    .concat("/staff/staff/baiduVoiceSdk?token=")
+                    .concat(SPUtils.getInstance().getString("token")))
+                    .add("device_id", DeviceIdUtil.getDeviceId(mActivityPluginBinding.getActivity()))
+                    .asObject(SpeakerSN.class)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<SpeakerSN>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-        //获取百度离线语音的序列号
-        RxHttp.postJson(SPUtils.getInstance().getString("domain")
-                .concat("/staff/staff/baiduVoiceSdk?token=")
-                .concat(SPUtils.getInstance().getString("token")))
-                .add("device_id", DeviceIdUtil.getDeviceId(mActivityPluginBinding.getActivity()))
-                .asObject(SpeakerSN.class)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SpeakerSN>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(SpeakerSN speakerSN) {
-                        Log.e(TAG, "onNext: " + speakerSN.toString());
-                        if (speakerSN.getData().getResult().isEmpty()) {
-                            ToastUtils.showLong("激活离线语音失败，请重启应用或者联系技术！");
-                        } else {
-                            //使用设备id获取离线语音序列号
-                            mSpeakerManager.config(speakerSN.getData().getResult());
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError: " + e.toString());
+                        @Override
+                        public void onNext(SpeakerSN speakerSN) {
+                            if (speakerSN.getData().getResult().isEmpty()) {
+                                ToastUtils.showLong("激活离线语音失败，请重启应用或者联系技术！");
+                            } else {
+                                //使用设备id获取离线语音序列号
+                                mSpeakerManager.config(speakerSN.getData().getResult());
+                            }
+                        }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "onError: " + e.toString());
 
-                    @Override
-                    public void onComplete() {
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
+
+        if (mFlutterPluginBinding != null) {
+            // 0. 开起保活进程
+            Intent protectServiceIntent = new Intent(mFlutterPluginBinding.getApplicationContext(), ProtectService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mFlutterPluginBinding.getApplicationContext().startForegroundService(protectServiceIntent);
+            } else {
+                mFlutterPluginBinding.getApplicationContext().startService(protectServiceIntent);
+            }
+        }
+
     }
 
+    //添加到Engine
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         Log.e(TAG, "onAttachedToEngine: ");
+        mFlutterPluginBinding = binding;
         mMethodChannel = new MethodChannel(binding.getBinaryMessenger(), SERVICE_PLUGIN);
         mMethodChannel.setMethodCallHandler(this);
-
-        // 0. 开起保活进程
-        Intent protectServiceIntent = new Intent(binding.getApplicationContext(), ProtectService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            binding.getApplicationContext().startForegroundService(protectServiceIntent);
-        } else {
-            binding.getApplicationContext().startService(protectServiceIntent);
-        }
-
         // 1. Init Beep
         BeepManager.getInstance().init(binding.getApplicationContext());
         // 2. 接收后台接单提示
@@ -333,7 +337,7 @@ public class ServicesPlugin implements FlutterPlugin, MethodCallHandler, Activit
 
                     @Override
                     public void onCancel() {
-                        ToastUtils.showShort("请将司机端添加到电量白名单中，否则将影响接单！");
+                        ToastUtils.showShort("请将应用添加到电量白名单中，否则可能影响接单！");
                     }
                 })).show();
             }
@@ -345,8 +349,6 @@ public class ServicesPlugin implements FlutterPlugin, MethodCallHandler, Activit
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         this.mActivityPluginBinding = binding;
-        //请求电量白名单
-        whiteListSetting(binding.getActivity());
     }
 
     @Override

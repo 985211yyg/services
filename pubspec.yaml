@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_tts: ^3.2.1
+  flutter_tts: ^3.2.2
   # 音量控制
   volume_control: ^0.1.5
 
